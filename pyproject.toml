@@ -1,0 +1,22 @@
+﻿[project]
+name = "mcp-kmgr"
+version = "0.1.0"
+description = "KMGR: Repo+Chat packer MCP extension for Goose"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["mcp[cli]>=1.2.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Tell Hatch EXACTLY which directory to package (src-layout)
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_kmgr"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/mcp_kmgr", "README.md", "pyproject.toml"]
+
+# Optional convenience script (not required for Goose)
+[project.scripts]
+mcp-kmgr = "mcp_kmgr.server:mcp.run"

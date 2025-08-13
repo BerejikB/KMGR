@@ -1,0 +1,77 @@
+KMGR Protocol — MCP First (Python Extension)
+
+Extension: kmgr (MCP/STDIO).
+Tools:
+
+    kmgr.set_repo_alias(alias, path, is_default=false)
+
+    kmgr.build_pack(repo?, max_pack_mb=2048) → {ok, data:{pack, alias, repo, size_bytes}}
+
+    kmgr.append_chat(role, content, repo?, dedup=true) → {ok, data:{pack, delta_bytes}}
+
+    kmgr.export_context(query, repo?, max_bytes=120000, out_file?) → {ok, data:{pack, out_file, bytes}}
+
+Repo selection (explicit): pass repo as alias or absolute path on every call.
+Registry (optional): set once via set_repo_alias; you may also rely on GOOSE_REPO env or default alias set in registry.
+
+Execution rules:
+
+    Prefer MCP tools. Only if MCP fails, fall back to dev-shell PowerShell and stop after one recovery attempt.
+
+    After each call, emit exactly one line:
+    Success:<short>.Next:<plan> or Fail:<err>.Recover:<concrete_action>
+
+    Attempt ≥1 recovery before halt.
+
+    Verify success before next step using returned ok and required fields.
+
+    Keep only compressed state facts; no verbose logs unless asked.
+
+    Do not skip context export before planning the next LLM step.
+
+Standard cycle (every turn):
+
+    Build/refresh pack
+    kmgr.build_pack(repo=<alias|path>)
+    Verify: ok==true and data.pack exists; size_bytes>0.
+    On fail: set alias if missing → kmgr.set_repo_alias(...) then retry build_pack once.
+
+    Append chats (both turns)
+    kmgr.append_chat(role='user', content=<last_user>, repo=<...>, dedup=true)
+    kmgr.append_chat(role='assistant', content=<last_assistant>, repo=<...>, dedup=true)
+    Verify: ok==true; delta_bytes>=0 (0 implies dedup, still acceptable).
+    On fail: rebuild pack once, then retry append once.
+
+    Export compact context
+    kmgr.export_context(query=<exact terms>, repo=<...>, max_bytes=120000, out_file=<optional>)
+    Verify: ok==true; bytes>0; out_file exists.
+    On fail: broaden query or raise max_bytes, then retry once.
+
+Recovery checklist (use the first applicable):
+
+    Unknown alias or no repo resolved → kmgr.set_repo_alias(alias, path, is_default=true) then build_pack.
+
+    Empty context → broaden query or increase max_bytes.
+
+    Pack not found → build_pack then retry prior step.
+
+    MCP tool error (INVALID_PARAMS) → correct input; (INTERNAL_ERROR) → stop after one retry and surface error.
+
+Output contract (agent):
+
+    Only the prescribed Success/Fail/Recover line per step. Summarize only if explicitly requested.
+
+Minimal example (alias flow):
+
+    kmgr.set_repo_alias('teutoburg','K:\\Repos\\TeutoburgGame',true)
+
+    kmgr.build_pack(repo='teutoburg')
+
+    kmgr.append_chat('user', <last_user>, repo='teutoburg', dedup=true)
+
+    kmgr.append_chat('assistant', <last_assistant>, repo='teutoburg', dedup=true)
+
+    kmgr.export_context('combat system OR javelin', repo='teutoburg', max_bytes=120000)
+
+Fallback (only if MCP repeatedly fails):
+Use dev-shell PowerShell with the KMGR PS module previously provided; perform the same three steps; stop after one recovery attempt and report the blocking error.

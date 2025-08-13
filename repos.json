@@ -1,0 +1,8 @@
+{
+  "default": "teutoburg",
+  "aliases": {
+    "goose": "K:\\Repos\\goose",
+	"knowledgemanager": "K:\\GOOSE\\KMGR",
+	"FinancialManagementAgent": "K:\\GOOSE\\FNA"
+  }
+}

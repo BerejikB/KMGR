@@ -1,0 +1,16 @@
+[project]
+name = "mcp-kmgr"
+version = "0.1.0"
+description = "KMGR: Repo+Chat packer MCP extension for Goose"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.2.0",
+]
+
+[project.scripts]
+mcp-kmgr = "mcp_kmgr.server:mcp.run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
