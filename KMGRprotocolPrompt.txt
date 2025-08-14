@@ -1,5 +1,11 @@
 KMGR Protocol — MCP First (Python Extension)
 
+File-Stream server: running under Windows node, auto-started by kmgr_wrapper.cmd
+- Port: 17777; Roots: K:\GOOSE; Limits: CHUNK<=65536 bytes, LINES<=400
+- Use for any file IO larger than a few KB to avoid context overflow. Prefer streamed reads over developer view/grep.
+- Logs: K:\GOOSE\scratch\filestream.log, err: filestream.err; PID: scratch\filestream.pid
+
+
 Extension: kmgr (MCP/STDIO).
 Tools:
 
