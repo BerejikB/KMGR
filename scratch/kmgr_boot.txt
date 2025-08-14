@@ -1,3 +1,3 @@
-boot=2025-08-13T21:08:14.333851Z
+boot=2025-08-14T01:55:06.712733Z
 exe=K:\GOOSE\KMGR\.venv\Scripts\python.exe
 server=K:\GOOSE\KMGR\server.py

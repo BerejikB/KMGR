@@ -1,8 +1,74 @@
-Traceback (most recent call last):
-  File "K:\GOOSE\KMGR\server.py", line 19, in <module>
-    from mcp.server.fastmcp import FastMCP
-  File "K:\GOOSE\KMGR\.venv\Lib\site-packages\mcp\__init__.py", line 1, in <module>
-    from .client.session import ClientSession
-  File "K:\GOOSE\KMGR\.venv\Lib\site-packages\mcp\client\session.py", line 8, in <module>
-    from pydantic import AnyUrl, TypeAdapter
-ImportError: cannot import name 'TypeAdapter' from 'pydantic' (K:\GOOSE\KMGR\.venv\Lib\site-packages\pydantic\__init__.cp313-win_amd64.pyd)
+K:\GOOSE\KMGR\server.py:91: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "boot=" + datetime.utcnow().isoformat() + "Z\n"
+[08/13/25 18:55:06] WARNING  Tool already exists:            tool_manager.py:66
+                             kmgr_llm_bootstrap                                
+[08/13/25 18:55:10] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 18:55:16] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 18:58:53] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:02:33] INFO     Processing request of type           server.py:624
+                             CallToolRequest                                   
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:03:13] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:06:07] INFO     Processing request of type           server.py:624
+                             CallToolRequest                                   
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:07:39] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:11:52] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:12:07] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:18:50] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+[08/13/25 19:19:05] INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
+                    INFO     Processing request of type           server.py:624
+                             ListToolsRequest                                  
