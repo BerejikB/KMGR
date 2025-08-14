@@ -173,6 +173,79 @@ async function handleStat(req, res, url) {
   writeJson(res, 200, out);
 }
 
+function writeText(res, code, text, contentType = 'text/plain; charset=utf-8') {
+  res.writeHead(code, {
+    'content-type': contentType,
+    'access-control-allow-origin': '*',
+    'access-control-allow-headers': '*',
+    'access-control-allow-methods': 'GET,OPTIONS,POST',
+  });
+  res.end(text);
+}
+
+async function handleSearch(req, res, url) {
+  const rawPath = url.searchParams.get('path');
+  const q = url.searchParams.get('q') || '';
+  const isRegex = ['1','true','yes'].includes(String(url.searchParams.get('regex')||'').toLowerCase());
+  const icase = ['1','true','yes','i'].includes(String(url.searchParams.get('i')||'').toLowerCase());
+  const maxResults = Math.max(1, parseIntSafe(url.searchParams.get('max'), 200));
+
+  if (!rawPath) return writeJson(res, 400, { error: { message: 'Missing path' } });
+  if (!q) return writeJson(res, 400, { error: { message: 'Missing q' } });
+
+  let absPath;
+    if (url.pathname === '/search') return handleSearch(req, res, url);
+    if (url.pathname === '/robots.txt') return writeText(res, 200, 'User-agent: *\nDisallow: /', 'text/plain; charset=utf-8');
+    if (url.pathname === '/') return writeJson(res, 200, { ok: true, service: 'file-stream-server', port: PORT, roots: ROOTS, limits: { MAX_CHUNK, MAX_LINES }, endpoints: ['/', '/health', '/stat', '/chunk', '/lines', '/search', '/robots.txt'] });
+
+  try { absPath = safeResolve(rawPath); } catch (e) {
+    return writeJson(res, 403, { error: { message: e.message } });
+  }
+  if (!existsSync(absPath)) return writeJson(res, 404, { error: { message: 'Not found' } });
+
+  const st = statSync(absPath);
+  const MAX_SEARCH_BYTES = Number(process.env.FILE_STREAM_MAX_SEARCH_BYTES || 2 * 1024 * 1024); // 2 MiB
+  const end = Math.min(st.size - 1, MAX_SEARCH_BYTES - 1);
+
+  const stream = createReadStream(absPath, { start: 0, end });
+  const results = [];
+  let buf = '';
+  let regex;
+  if (isRegex) {
+    try { regex = new RegExp(q, icase ? 'i' : ''); } catch (e) { return writeJson(res, 400, { error: { message: 'Bad regex' } }); }
+  }
+
+  stream.on('data', (d) => { buf += d.toString('utf8'); });
+  stream.on('error', (err) => writeJson(res, 500, { error: { message: String(err) } }));
+  stream.on('end', () => {
+    const lines = buf.split(/\r?\n/);
+    for (let i = 0; i < lines.length && results.length < maxResults; i++) {
+      const line = lines[i];
+      if (isRegex) {
+        const m = line.match(regex);
+        if (m) {
+          results.push({ line: i+1, col: (m.index||0)+1, match: m[0], preview: line });
+        }
+      } else {
+        const hay = icase ? line.toLowerCase() : line;
+        const needle = icase ? q.toLowerCase() : q;
+        const idx = hay.indexOf(needle);
+        if (idx !== -1) results.push({ line: i+1, col: idx+1, match: q, preview: line });
+      }
+    }
+    writeJson(res, 200, {
+      path: absPath,
+      size: st.size,
+      truncated: st.size > (end+1),
+      query: q,
+      regex: isRegex,
+      icase,
+      max: maxResults,
+      results,
+    });
+  });
+}
+
 const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {

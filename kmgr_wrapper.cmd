@@ -24,6 +24,9 @@ set "PYTHON_EXE=%PY%"
 set "PYTHONUTF8=1"
 set "PYTHONIOENCODING=utf-8"
 
+REM Ensure MCP CLI present (avoid slow installs on every launch)
+"%PY%" -c "import importlib, sys; sys.exit(0 if importlib.util.find_spec('mcp') else 1)" 2>nul || "%PY%" -m pip -q install "mcp[cli]>=1.2.0" >nul 2>&1
+
 REM Ensure runtime deps compatible with server (Pydantic v1)
 "%PY%" -m pip -q install "pydantic<2" >nul 2>&1
 
